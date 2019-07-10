@@ -1,6 +1,7 @@
 <head>
     <title>Handy trip planner</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="scripts/MapboxPolyline/polyline.js"></script>
     <script src="scripts/main.js"></script>
     <meta charset="utf-8">
     <link rel="stylesheet" type="css" href="Stylesheets/trips_style.css">
@@ -21,8 +22,12 @@
     <br>Start: <input type="text" id="stop1" value="">
     <br>End: <input type="text" id="stop2" value="">
     <br><button class="button" onclick="myFunction()">Find next</button>
-    <br> <object type="image/svg+xml" data="resources/routes.svg">
-        Your browser does not support SVG
-    </object>
+    <br>
+    <svg id="mapper" width="0" height="0">
+        <polyline id="map" points=""
+                  style="fill:none;stroke:black;stroke-width:1">
+        </polyline>
+
+    </svg>
     <br>
 </body>

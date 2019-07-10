@@ -40,13 +40,17 @@ function route1button(){
                 button = document.createElement("BUTTON")
                 button.id = trip + "button"
                 button.setAttribute("class", "dropbtn")
-                button.setAttribute("onClick", "tripbutton('" + trip + "content')")
+                button.setAttribute("onClick", "tripbutton('" + trip + "content')")//;updatesvg('" + this_trip.shape.polyline + "')")
+                button.innerText = this_trip.route_pattern.name
                 for (stop of this_trip.stops) {
                     //console.log(stop)
-                    item = document.createElement("P")
+                    item = document.createElement("BUTTON")
+                    item.setAttribute("class", "stop");
                     text_node = document.createTextNode(stop.name)
                     item.appendChild(text_node)
                     item.id = trip + " " + stop.id
+                    //item.setAttribute("class", "dropbtn")
+                    item.setAttribute("onClick", "stop_button('" + trip + " " + stop.id + "')")
                     content.appendChild(item)
                     console.log(content.id)
                 }
@@ -147,6 +151,33 @@ function stopsbutton() {
 }
 function tripbutton(id) {
     document.getElementById(id).classList.toggle("show");
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show') && openDropdown.id != id) {
+        openDropdown.classList.remove('show');
+      }
+    }
+}
+function stop_button(id) {
+    var x = document.getElementsByClassName("stop");
+    var i;
+    for (i = 0; i < x.length; i++) {
+      var openStop = x[i];
+      if (openStop.classList.contains('select')) {
+        openStop.classList.remove('select');
+      }
+    }
+    document.getElementById(id).classList.toggle("select");
+}
+scale = 7000
+function updatesvg(polylin) {
+    scaled_points = polyline.decode(polylin, 5).map(x => [x[0]*scale - 42.35*scale, x[1]*scale+71.14*scale])
+    updated_polyline = JSON.stringify(scaled_points).split("],[").join(" ").slice(2,-2)
+    console.log(updated_polyline)
+    document.getElementById("map").setAttribute("points", updated_polyline)
+    console.log(document.getElementById("map"))
 }
 
 // Close the dropdown if the user clicks outside of it
