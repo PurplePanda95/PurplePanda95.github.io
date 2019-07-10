@@ -4,7 +4,6 @@ async function log_request(request, location, id) {
         console.log(x)
         $( "body" ).data( "stop_name", JSON.stringify(x.data))
         console.log($(location).data(id))
-        return x
     })
     /*.success(function() {
         console.log($(location).data(id))
@@ -14,10 +13,103 @@ async function log_request(request, location, id) {
 async function getStops(route) {
     return log_request()
 }
-function stop1button(){
-    $("#stop1").data('stop_name', document.getElementById("stop1").value)
-    console.log("Someone pressed the stop 1 button! " + $("#stop1").data('stop_name'))
+function route1button(){
+    var route_id = document.getElementById("route1").value;
+    $("#route1").data('route_id', route_id)
+    console.log("Someone pressed the stop 1 button! " + route_id)
+    trips = {}
+    shapes = {}
+    route = {}
+    stops = {}
+    a = $.getJSON("https://api-v3.mbta.com/route_patterns/?filter[route]=" + route_id +
+    "&include=representative_trip,representative_trip.shape,route,representative_trip.shape.stops&fields[trip]"+
+    "=headsign,direction_id&fields[stop]=name,latitude,longitude"+"&"+API_KEY).then(
+        format_route_data
+    ).then(
+        function() {
+            big_node = document.createElement("DIV")
+            big_node.id = "stop_selector"
+            for (trip in trips) {
+                this_trip = trips[trip]
+                node = document.createElement("UL");
+                node.id = trip
+                for (stop of this_trip.stops) {
+                    console.log(stop)
+                    li_node = document.createElement("LI")
+                    text_node = document.createTextNode(stop.name)
+                    li_node.appendChild(text_node)
+                    li_node.id = trip + " " + stop.id
+                    node.appendChild(li_node)
+                }
+                big_node.appendChild(node);
+            }
+            document.body.appendChild(big_node)
+        }
+    )
+
 }
+function update_trips(thing) {
+    trip_id = thing.id
+    trips[trip_id].direction_id = thing.attributes.direction_id
+    trips[trip_id].headsign = thing.attributes.headsign
+    shape_id = thing.relationships.shape.data.id
+    if (!(shapes.hasOwnProperty(shape_id))) {
+        shapes[shape_id] = {trip_id: thing.id}
+    }
+    else {
+        trips[trip_id].shape = shapes[shape_id].shape;
+        trips[trip_id].stops = shapes[shape_id].stops;
+    }
+}
+function update_shapes(thing) {
+    shape_id = thing.id
+    console.log(shape_id)
+    if (shapes.hasOwnProperty(shape_id)) {
+        console.log(shapes[shape_id])
+        trip_id = shapes[shape_id].trip_id
+        trips[trip_id].shape = thing.attributes;
+        trips[trip_id].stops = thing.relationships.stops.data            }
+    else {
+        shapes[shape_id] = {shape: thing.attributes, stops: thing.relationships.stops.data}
+    }
+}
+function update_stops(trip) {
+    trip_stops = trip.stops.map(function(stop) {return {id: stop.id, name: stops[stop.id].name,
+        latitude: stops[stop.id].latitude, longitude: stops[stop.id].longitude}})
+    trip.stops = trip_stops
+}
+function format_route_data(x) {
+    console.log(x)
+    for (pattern of x.data) {
+        console.log(pattern.relationships)
+        trip_id = pattern.relationships.representative_trip.data.id;
+        trips[trip_id] = {route_pattern: pattern.attributes}
+    }
+    for (thing of x.included) {
+        if (thing.type == "trip") {
+            update_trips(thing)
+            continue
+        }
+        if (thing.type == "shape") {
+            update_shapes(thing)
+            continue
+        }
+        if (thing.type == "route") {
+            route = thing.attributes
+            continue
+        }
+
+        stop_id = thing.id
+        stops[stop_id] = thing.attributes
+    }
+    for (trip in trips) {
+        update_stops(trips[trip])
+    }
+    console.log(trips)
+    console.log(route)
+}
+//https://api-v3.mbta.com/schedules/?filter[route]=87&sort=direction_id&sort=stop_sequence&api_key=d50148cbfe594e27a232c50d1c2933a9
+//https://api-v3.mbta.com/schedules/?filter[route]=62&sort=stop_sequence&sort=direction_id&page[limit]=200&api_key=d50148cbfe594e27a232c50d1c2933a9
 function myFunction(){
     //first, user types in their first stop. [press enter to evaluate].
 
@@ -35,4 +127,23 @@ function myFunction(){
     var route = document.getElementById("route1").value;
     Promise.all()
 
+}
+//then:
+//https://api-v3.mbta.com/schedules/?filter[trip_id]=ALL_THE_TRIP_IDS&sort=direction_id&sort=stop_sequence&api_key=d50148cbfe594e27a232c50d1c2933a9
+function stopsbutton() {
+  document.getElementById("myDropdown").classList.toggle("show");
+}
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
 }
