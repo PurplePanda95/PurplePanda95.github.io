@@ -1,0 +1,6 @@
+<!DOCTYPE svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+<line
+    stroke="black" x1="0" y1="0" x2="900" y2="600">
+</line>
+</svg>
