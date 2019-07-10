@@ -31,19 +31,33 @@ function route1button(){
             big_node.id = "stop_selector"
             for (trip in trips) {
                 this_trip = trips[trip]
-                node = document.createElement("UL");
-                node.id = trip
+                dropdown = document.createElement("DIV");
+                dropdown.id = trip
+                dropdown.setAttribute("class", "dropdown");
+                content = document.createElement("DIV")
+                content.id = trip + "content"
+                content.setAttribute("class", "dropdown-content");
+                button = document.createElement("BUTTON")
+                button.id = trip + "button"
+                button.setAttribute("class", "dropbtn")
+                button.setAttribute("onClick", "tripbutton('" + trip + "content')")
                 for (stop of this_trip.stops) {
-                    console.log(stop)
-                    li_node = document.createElement("LI")
+                    //console.log(stop)
+                    item = document.createElement("P")
                     text_node = document.createTextNode(stop.name)
-                    li_node.appendChild(text_node)
-                    li_node.id = trip + " " + stop.id
-                    node.appendChild(li_node)
+                    item.appendChild(text_node)
+                    item.id = trip + " " + stop.id
+                    content.appendChild(item)
+                    console.log(content.id)
                 }
-                big_node.appendChild(node);
+                //console.log(document.getElementById(content.id).value)
+                dropdown.appendChild(button)
+                dropdown.appendChild(content)
+                //console.log(document.getElementById(trip + "content"))
+                big_node.appendChild(dropdown);
             }
             document.body.appendChild(big_node)
+            //console.log
         }
     )
 
@@ -63,9 +77,7 @@ function update_trips(thing) {
 }
 function update_shapes(thing) {
     shape_id = thing.id
-    console.log(shape_id)
     if (shapes.hasOwnProperty(shape_id)) {
-        console.log(shapes[shape_id])
         trip_id = shapes[shape_id].trip_id
         trips[trip_id].shape = thing.attributes;
         trips[trip_id].stops = thing.relationships.stops.data            }
@@ -79,9 +91,9 @@ function update_stops(trip) {
     trip.stops = trip_stops
 }
 function format_route_data(x) {
-    console.log(x)
+    //console.log(x)
     for (pattern of x.data) {
-        console.log(pattern.relationships)
+        //console.log(pattern.relationships)
         trip_id = pattern.relationships.representative_trip.data.id;
         trips[trip_id] = {route_pattern: pattern.attributes}
     }
@@ -105,8 +117,8 @@ function format_route_data(x) {
     for (trip in trips) {
         update_stops(trips[trip])
     }
-    console.log(trips)
-    console.log(route)
+    //console.log(trips)
+    //console.log(route)
 }
 //https://api-v3.mbta.com/schedules/?filter[route]=87&sort=direction_id&sort=stop_sequence&api_key=d50148cbfe594e27a232c50d1c2933a9
 //https://api-v3.mbta.com/schedules/?filter[route]=62&sort=stop_sequence&sort=direction_id&page[limit]=200&api_key=d50148cbfe594e27a232c50d1c2933a9
@@ -133,9 +145,12 @@ function myFunction(){
 function stopsbutton() {
   document.getElementById("myDropdown").classList.toggle("show");
 }
+function tripbutton(id) {
+    document.getElementById(id).classList.toggle("show");
+}
 
 // Close the dropdown if the user clicks outside of it
-window.onclick = function(event) {
+/*window.onclick = function(event) {
   if (!event.target.matches('.dropbtn')) {
     var dropdowns = document.getElementsByClassName("dropdown-content");
     var i;
@@ -147,3 +162,4 @@ window.onclick = function(event) {
     }
   }
 }
+*/
