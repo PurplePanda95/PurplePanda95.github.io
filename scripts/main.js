@@ -26,8 +26,17 @@ function route1button(){
     "=headsign,direction_id&fields[stop]=name,latitude,longitude"+"&"+API_KEY).then(
         format_route_data
     ).then(
-        function() {
-            big_node = document.createElement("DIV")
+        makeDropDowns
+    )
+
+
+}
+function makeDropDowns() {
+    if (document.getElementById("stop_selector") !== null) {
+        var element = document.getElementById("stop_selector");
+        element.parentNode.removeChild(element);
+    }
+    big_node = document.createElement("DIV")
             big_node.id = "stop_selector"
             for (trip in trips) {
                 this_trip = trips[trip]
@@ -45,12 +54,12 @@ function route1button(){
                 for (stop of this_trip.stops) {
                     //console.log(stop)
                     item = document.createElement("BUTTON")
-                    item.setAttribute("class", "stop");
+                    item.setAttribute("class", "stop " + stop.id);
                     text_node = document.createTextNode(stop.name)
                     item.appendChild(text_node)
-                    item.id = trip + " " + stop.id
+                    item.id = stop.id
                     //item.setAttribute("class", "dropbtn")
-                    item.setAttribute("onClick", "stop_button('" + trip + " " + stop.id + "')")
+                    item.setAttribute("onClick", "stop_button('" + stop.id + "')")
                     content.appendChild(item)
                     console.log(content.id)
                 }
@@ -62,9 +71,6 @@ function route1button(){
             }
             document.body.appendChild(big_node)
             //console.log
-        }
-    )
-
 }
 function update_trips(thing) {
     trip_id = thing.id
@@ -100,6 +106,7 @@ function format_route_data(x) {
         //console.log(pattern.relationships)
         trip_id = pattern.relationships.representative_trip.data.id;
         trips[trip_id] = {route_pattern: pattern.attributes}
+        trips[trip_id].route_pattern.id = pattern.id
     }
     for (thing of x.included) {
         if (thing.type == "trip") {
@@ -121,7 +128,7 @@ function format_route_data(x) {
     for (trip in trips) {
         update_stops(trips[trip])
     }
-    //console.log(trips)
+    console.log(trips)
     //console.log(route)
 }
 //https://api-v3.mbta.com/schedules/?filter[route]=87&sort=direction_id&sort=stop_sequence&api_key=d50148cbfe594e27a232c50d1c2933a9
@@ -169,7 +176,14 @@ function stop_button(id) {
         openStop.classList.remove('select');
       }
     }
-    document.getElementById(id).classList.toggle("select");
+    var these_stops = document.getElementsByClassName(id)
+    this_length= these_stops.length
+    for (var j = 0; j < this_length; j ++) {
+        console.log("hi")
+        these_stops[j].classList.toggle("select");
+        console.log(these_stops[j])
+    }
+    //getPrediction()
 }
 scale = 7000
 function updatesvg(polylin) {
@@ -178,6 +192,33 @@ function updatesvg(polylin) {
     console.log(updated_polyline)
     document.getElementById("map").setAttribute("points", updated_polyline)
     console.log(document.getElementById("map"))
+}
+function getPrediction(stop1_id, stop2_id) {
+    var trip_found = false
+    var ids = [];
+    for (x in trips) {
+        trip = trips[x]
+        for (y in trip.stops) {
+            if (trip.stops[y].id === stop1_id) {
+                trip_found = true
+            }
+            else if (trip_found && trip.stops[y].id === stop2_id) {
+                ids.push(trip.route_pattern.id)
+                trip_found = false
+                break
+            }
+        }
+    }
+    a = $.getJSON("https://api-v3.mbta.com/trips/?filter[route_pattern]=" + ids.join() +
+        "&fields[trip]=&"+API_KEY)
+    a.then(
+        function(x) {
+            trip_ids = x.data.map(function(trip) {return trip.id})
+            return $.getJSON("https://api-v3.mbta.com/predictions/?filter[trip]=" + trip_ids.join() +
+        "&sort=time&"+API_KEY)
+        }
+
+    )
 }
 
 // Close the dropdown if the user clicks outside of it
