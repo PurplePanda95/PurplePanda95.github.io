@@ -57,11 +57,8 @@ function makeDropDowns() {
                     item.setAttribute("class", "stop " + stop.id);
                     text_node = document.createTextNode(stop.name)
                     item.appendChild(text_node)
-                    item.id = stop.id
-                    //item.setAttribute("class", "dropbtn")
                     item.setAttribute("onClick", "stop_button('" + stop.id + "')")
                     content.appendChild(item)
-                    console.log(content.id)
                 }
                 //console.log(document.getElementById(content.id).value)
                 dropdown.appendChild(button)
@@ -129,6 +126,8 @@ function format_route_data(x) {
         update_stops(trips[trip])
     }
     console.log(trips)
+    $("body").data("trips", trips)
+    $("body").data("route", route)
     //console.log(route)
 }
 //https://api-v3.mbta.com/schedules/?filter[route]=87&sort=direction_id&sort=stop_sequence&api_key=d50148cbfe594e27a232c50d1c2933a9
@@ -179,11 +178,10 @@ function stop_button(id) {
     var these_stops = document.getElementsByClassName(id)
     this_length= these_stops.length
     for (var j = 0; j < this_length; j ++) {
-        console.log("hi")
         these_stops[j].classList.toggle("select");
-        console.log(these_stops[j])
     }
-    //getPrediction()
+    //getPrediction(id, "place-lech").then(
+    //function(x) {console.log(x)})
 }
 scale = 7000
 function updatesvg(polylin) {
@@ -193,32 +191,114 @@ function updatesvg(polylin) {
     document.getElementById("map").setAttribute("points", updated_polyline)
     console.log(document.getElementById("map"))
 }
-function getPrediction(stop1_id, stop2_id) {
+function getPrediction(stop1_name, stop2_name, time) {
+    trips = $("body").data("trips")
+    var stop1_id;
+    var stop2_id;
     var trip_found = false
     var ids = [];
     for (x in trips) {
         trip = trips[x]
         for (y in trip.stops) {
-            if (trip.stops[y].id === stop1_id) {
+            if (trip.stops[y].name == stop1_name) {
+                stop1_id = trip.stops[y].id
                 trip_found = true
             }
-            else if (trip_found && trip.stops[y].id === stop2_id) {
+            else if (trip_found && trip.stops[y].name === stop2_name) {
+                stop2_id = trip.stops[y].id
                 ids.push(trip.route_pattern.id)
                 trip_found = false
                 break
             }
         }
     }
-    a = $.getJSON("https://api-v3.mbta.com/trips/?filter[route_pattern]=" + ids.join() +
-        "&fields[trip]=&"+API_KEY)
-    a.then(
+    console.log(ids.length)
+    return $.getJSON("https://api-v3.mbta.com/trips/?filter[route_pattern]=" + ids.join() +
+        "&fields[trip]=&"+API_KEY).then(
         function(x) {
             trip_ids = x.data.map(function(trip) {return trip.id})
             return $.getJSON("https://api-v3.mbta.com/predictions/?filter[trip]=" + trip_ids.join() +
-        "&sort=time&"+API_KEY)
+        "&sort=time&filter[stop]=" + stop1_id + "," + stop2_id + "&" +API_KEY)
         }
 
+    ).then(
+        function(x) {
+            console.log(x)
+            var found = false
+            var take_trip = {}
+            for (prediction of x.data){
+                if (getTime(prediction.attributes) > time && prediction.relationships.stop.data.id === stop1_id) {
+                    found = true
+                    take_trip.prediction1 = prediction
+                    take_trip.found = false
+                    console.log("hi")
+                }
+                else if (found && prediction.relationships.stop.data.id !== stop1_id
+                    && prediction.relationships.trip.data.id === take_trip.prediction1.relationships.trip.data.id) {
+                    take_trip.found = true
+                    take_trip.prediction2 = prediction
+                    break
+                }
+            }
+            if (take_trip.found) {
+                return {
+                    departure_time: getTime(take_trip.prediction1.attributes),
+                    arrival_time: getTime(take_trip.prediction2.attributes),
+                    start: stop1_id,
+                    end: stop2_id,
+                    route: take_trip.prediction1.relationships.route.data.id
+                }
+            }
+            else {
+                return 0
+            }
+        }
     )
+}
+function milli(minutes) {
+    return minutes * 60000
+}
+function getTime(attributes) {
+    if (attributes.arrival_time !== null) {
+        return Date.parse(attributes.arrival_time)
+    }
+    if (attributes.departure_time !== null) {
+        return Date.parse(attributes.departure_time)
+    }
+    return null
+}
+function route_school() {
+    route87 = getPrediction("Somerville Ave @ Linden St", "Lechmere", Date.now() + milli(3))
+    route80 = getPrediction("McGrath Hwy @ Medford St", "Lechmere", Date.now() + milli(7))
+    route88 = getPrediction("McGrath Hwy @ Medford St", "Lechmere", Date.now() + milli(7))
+    route91 = getPrediction("Somerville Ave @ Stone Ave", "Prospect St @ Bishop Allen Dr", Date.now() + milli(3))
+    routeCT2 = getPrediction("Somerville Ave @ Stone Ave", "Ames St @ Main St", Date.now() + milli(3))
+    route86 = getPrediction("Somerville Ave @ Stone Ave", "Harvard Sq @ Garden St - Dawes Island", Date.now() + milli(3))
+    green = Promise.all(route87, route80, route88).then(
+
+        function(trips) {
+            var best_trip = trips[0]
+            for (trip of trips) {
+                if (trip != null && (best_trip == null || trip.arrival_time < best_trip.arrival_time)) {
+                    best_trip = trip
+                }
+            }
+            return best_trip
+        }
+    )
+    Promise.all(green, route86, route91, routeCT2).then(
+        function(trips) {
+
+        }
+    )
+}
+function openWebsite() {
+    $.get("https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDate",
+    function(data) {
+        console.log(data)
+    })
+
+
 }
 
 // Close the dropdown if the user clicks outside of it
