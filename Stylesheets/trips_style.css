@@ -81,3 +81,6 @@ li  {
 
 .show {display: block;}
 .select {background-color: rgb(200,200,255);}
+.select_start {background-color: #4CAF50;}
+.select_end {background-color: rgb(255,5,5);}
+.greyed {background-color: rgb(230,230,230);}
