@@ -17,6 +17,10 @@ h2 {
     padding-bottom: 1%;
     padding-left: 1%;
 }
+#description {
+    padding-botton: 1%;
+    padding-left: 1%;
+}
 
 #main-pic {
     height: 80%;
@@ -44,12 +48,13 @@ h2 {
 .imgg img {
     width: 50%;
     margin:1%;
+    margin-left:0%;
     float: left;
     border-radius: 1%;
 }
 
 .imgg p {
-    height: 16vw;
+    height: 11.5vw;
     width: auto;
     margin: 1%;
     overflow-y: auto;
@@ -62,7 +67,8 @@ h2 {
 
 .caption-duo {
     margin: 1%;
-    width: 23%;
+    margin-left: 0%;
+    width: 24%;
     float: left;
 }
 
@@ -74,14 +80,20 @@ h2 {
 /* On screens that are 992px wide or less, go from four columns to two columns */
 @media screen and (max-width: 992px) {
   .caption-duo {
-    width: 46%;
+    width: 49%;
+  }
+  .imgg p {
+      height: 23vw
   }
 }
 
 /* On screens that are 600px wide or less, make the columns stack on top of each other instead of next to each other */
 @media screen and (max-width: 600px) {
   .caption-duo {
-    width: 98%;
+    width: 99%;
+  }
+  .imgg p {
+      height: 48vw
   }
 }
     </style>
@@ -131,9 +143,8 @@ h2 {
             
         </p>
     </div>
-    <h2>
-        Images of available fabrics for face masks!</h2>
-        <p>
+    <h2>Images of available fabrics for face masks!</h2>
+        <p id="description">
         Here are pictures of the current fabrics. You may have to zoom in to see them properly. You request a mask by its request name. 
         Some mask patterns are either temporarly or permanently unavailable, or soon to become so. If this is true, it will say so in the notes!
         If you have already requested a pattern, this unavailability might be due to you, and you should not worry! 
