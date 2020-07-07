@@ -1,0 +1,28 @@
+<head>
+    <title>Handy trip planner</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="scripts/MapboxPolyline/polyline.js"></script>
+    <script src="scripts/main.js"></script>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="css" href="Stylesheets/new_trips_style.css">
+</head>
+
+<body>
+    <div id="route-select" class="collapsible">
+        <h2>Select trips:</h2>
+        <button class="collapse" id="collapse-routes">Collapse</button>
+        <div id="route-blocks">
+
+        </div>
+        <button id="add-route">Add trip</button>
+        <button id="done-btn">Done</button>
+    </div>
+    <div id="trips-block" class="collapsible">
+        <button class="collapse" id="collapse-trips">Collapse</button>
+        <h2>Your options:</h2>
+    </div>
+    <div id="details-block" class="collapsible">
+        <h2>Trip details</h2>
+        <button class="collapse" id="collapse-details">Collapse</button>
+    </div>
+</body>

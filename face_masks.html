@@ -62,7 +62,7 @@ h2 {
 
 .caption-duo {
     margin: 1%;
-    width: 25%;
+    width: 23%;
     float: left;
 }
 
@@ -71,12 +71,19 @@ h2 {
     text-align: center;
 }
 
-.sunrise-pics img {
-    width: calc(100%/6 - 3%);
-    padding: 1% 1%
+/* On screens that are 992px wide or less, go from four columns to two columns */
+@media screen and (max-width: 992px) {
+  .caption-duo {
+    width: 46%;
+  }
 }
 
-
+/* On screens that are 600px wide or less, make the columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .caption-duo {
+    width: 98%;
+  }
+}
     </style>
 </head>
 <body height="100vh">
@@ -130,12 +137,14 @@ h2 {
         top to bottom, including crossed out squares. For example, the face masks with planets on them would be number 11. Masks patterns that have been crossed out are either temporarily or permanently unavailable. 
         If you have already requested it, this unavailability might be due to you, and you should not worry! (but if you are worried, don't hesitate to reach out!) 
         </p>
+    
     <img float=left src="resources/mask images.jpeg" width=100%>
-    <!--<h2>Photo gallery with captions!</h2>
+
+    <h2>Photo gallery with captions!</h2>
     <div class="imgg">
         <div class="caption-duo">
-            <img float=left src="resources/moon.JPG" alt="moon">
-            <p> One morning, the moon seemed really bright against the sky, and I tried to capture it.
+            <img float=left src="resources/blue and white batique.jpg.JPG" alt="blue and white batique">
+            <p> Request name: "blue and white batique"<br>Notes: big batch, 40 masks, has not been started yet.
             </p>
         </div>
         <div class="caption-duo">
