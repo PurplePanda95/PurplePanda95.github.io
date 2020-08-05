@@ -47,12 +47,18 @@ h2 {
     float: left;
 }
 
+
 .imgg img {
     width: 50%;
     margin:1%;
     margin-left:0%;
     float: left;
     border-radius: 1%;
+}
+
+.imgg img:hover {
+    cursor: pointer;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .imgg p {
@@ -79,6 +85,38 @@ h2 {
     text-align: center;
 }
 
+/* The expanding image container (positioning is needed to position the close button and the text) */
+.container {
+    position: relative;
+    width:24%;
+    display: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Expanding image text */
+#imgtext {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  color: white;
+  font-size: 20px;
+}
+
+/* Closable button inside the image */
+.closebtn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  color: white;
+  font-size: 35px;
+  cursor: pointer;
+}
+
+#expandedImg{
+    width: 100%;
+}
+
 /* On screens that are 992px wide or less, go from four columns to two columns */
 @media screen and (max-width: 992px) {
   .caption-duo {
@@ -87,6 +125,9 @@ h2 {
   .imgg p {
       height: 23vw
   }
+  .container{
+      width: 49%;
+    }
 }
 
 /* On screens that are 600px wide or less, make the columns stack on top of each other instead of next to each other */
@@ -97,7 +138,11 @@ h2 {
   .imgg p {
       height: 48vw
   }
+  .container {
+      width: 99%;
+    }
 }
+
 .accordion {
   background-color: #eee;
   color: #444;
@@ -195,7 +240,7 @@ h2 {
             </p>
         </div>
     </div>
-    <h2>Images of available fabrics for face masks!</h2>
+    <h2 id="descriptionH2">Images of available fabrics for face masks!</h2>
         <p id="description">
         Here are pictures of the current fabrics. You may have to zoom in to see them properly. You request a mask by its request name. 
         Some mask patterns are either temporarly or permanently unavailable, or soon to become so. If this is true, it will say so in the notes!
@@ -204,111 +249,122 @@ h2 {
         </p>
     
     <!--<img float=left src="resources/mask images.jpeg" width=100%>-->
-    <div class="imgg">
+   <!-- The expanding image container -->
+<div class="container">
+    <!-- Close the image -->
+    <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
+  
+    <!-- Expanded image -->
+    <img id="expandedImg">
+
+    <!-- Image text -->
+    <div id="imgtext"></div>
+  </div>
+    <div class="imgg" id="mask-images">
         <div class="caption-duo">
-            <img float=left src="resources/blue and white batique.jpg" alt="blue and white batique">
+            <a href="#descriptionH2"> <img float=left src="resources/blue and white batique.jpg" alt="blue and white batique" onclick="myFunction(this);"> </a>
             <p> Request name: "blue and white batique"<br>Notes: big batch, 40 masks, has not been started yet.
             </p>
         </div>
         <div class="caption-duo">
-            <img src="resources/blue with tiny flowers.jpg">
+            <a href="#descriptionH2"> <img src="resources/blue with tiny flowers.jpg" onclick="myFunction(this);"> </a>
             <p> Request name: "blue with tiny flowers"<br>Notes: currently only 2 masks, fronts pleated, but there is more fabric.
             </p>
         </div>
         <div class="caption-duo">
-            <img src="resources/rainbow swirl.jpg">
+            <a href="#descriptionH2"><img src="resources/rainbow swirl.jpg" onclick="myFunction(this);"></a>
             <p>Request name: "rainbow swirl"<br>Notes: still available for child masks. Extremely limited supply (~3 masks).</p>
      </div>   
    
         <div class="caption-duo">
-            <img src="resources/pale flowers.jpg">
+            <a href="#descriptionH2"><img src="resources/pale flowers.jpg"   onclick="myFunction(this);"></a>
             <p>Request name: "pale flowers"<br>Notes: Currently 2 mask fronts pleated. This fabric was donated by a friend.</p>
         </div>
         <div margin-left="6vw" class="caption-duo">
-            <img src="resources/tan and white squares.jpg">
+            <img src="resources/tan and white squares.jpg" onclick="myFunction(this);">
             <p>
                 Request name: "tan and white squares"<br>Notes: currently one mask complete except for elastic. All the rest were donated to CHA. Same fabric inside and out.
             </p>
         </div>
         <div class="caption-duo">
-            <img src="resources/wine red.jpg">
+            <a href="#descriptionH2"> <img src="resources/wine red.jpg"  onclick="myFunction(this);"> </a>
             <p>Request name: "wine red"<br>Notes: same fabric inside and out. Currently ~8 masks complete except elastic. Intended for donation to CHA.</p>
         </div>
         <div class="caption-duo">
-            <img src="resources/strawberries.jpg">
+            <a href="#descriptionH2"><img src="resources/strawberries.jpg" onclick="myFunction(this);"></a>
             <p>Request name: "strawberries"<br>Notes: Fabric donated by a friend. Currently 2 adult sized mask fronts pleated, 2 child sized unpleated.</p>
         </div>
     
         <div class="caption-duo">
-            <img src="resources/tea set.jpg">
+            <a href="#descriptionH2"> <img src="resources/tea set.jpg"  onclick="myFunction(this);"> </a>
             <p>
                 Request name: "tea set"<br>Notes: currently ~1 mask left. I did not choose this fabric and donated the rest to CHA.
             </p>
         </div>
         <div class="caption-duo">
-            <img src="resources/ocean painting.jpg">
+            <a href="#descriptionH2"><img src="resources/ocean painting.jpg" onclick="myFunction(this);"></a>
             <p> Request name: "ocean painting"<br>Notes: not yet started, unknown amount of available masks until a friend puts in her request.
             </p>
         </div>
         <div class="caption-duo">
-            <img src="resources/patterned blue.jpg">
+            <a href="#descriptionH2"><img src="resources/patterned blue.jpg" onclick="myFunction(this);"></a>
             <p> Request name: "patterned blue"<br>Notes: currently none left, there might be experimental masks made withs scraps.
             </p>        
         </div>
    
         <div class="caption-duo">
-                <img src="resources/planets.jpg">
+                <a href="#descriptionH2"><img src="resources/planets.jpg" onclick="myFunction(this);"></a>
                 <p> Request name: "planets"<br>Notes: currently ~5 left, there might be a few more. Due to the thin outer fabric, these masks should be worn with a filter. Due to a miscalculation, some are a bit small and might best be suited to children.<br>Some masks feature Saturn. If you would like to try for one of these, make sure to say so!
                 </p>
         </div>
         <div class="caption-duo">
-            <img src="resources/dotty brown.jpg">
+            <a href="#descriptionH2"><img src="resources/dotty brown.jpg" onclick="myFunction(this);"></a>
             <p> Request name: "dotty brown"<br>Notes: new batch of ~20 masks, not started yet.
             </p>
         </div>
         <div class="caption-duo">
-            <img src="resources/stoneware.jpg">
+            <img src="resources/stoneware.jpg" onclick="myFunction(this);">
             <p> Request name: "stoneware"<br>Notes: currently ~1 left due to donating the rest to CHA.
             </p>
         </div>
         <div class="caption-duo">
-            <img src="resources/tan map.jpg">
+            <img src="resources/tan map.jpg" onclick="myFunction(this);">
             <p> Request name: "tan map"<br>Notes: currently ~3 left.
             </p>
         </div>
         <div class="caption-duo">
-            <img float=left src="resources/red and white.jpg" alt="red and white">
+            <img float=left src="resources/red and white.jpg" alt="red and white" onclick="myFunction(this);">
             <p> Request name: "red and white"<br>Notes: currently none left, there might be another batch coming.
             </p>
         </div>
         <div class="caption-duo">
-            <img float=left src="resources/yellow paisly.jpg" alt="yellow paisly">
+            <img float=left src="resources/yellow paisly.jpg" alt="yellow paisly" onclick="myFunction(this);">
             <p> Request name: "yellow paisly"<br>Notes: out of stock. There might be experiment masks made with scraps.
             </p>
         </div>
 
         <div class="caption-duo">
-            <img float=left src="resources/colorful blue batique.jpg" alt="colorful blue batique">
+            <img float=left src="resources/colorful blue batique.jpg" alt="colorful blue batique" onclick="myFunction(this);">
             <p> Request name: "colorful blue batique"<br>Notes: batch of 20 masks, has not been started yet.
             </p>
         </div>
         <div class="caption-duo">
-            <img float=left src="resources/purple_paisly.jpg" alt="purple paisly">
+            <img float=left src="resources/purple_paisly.jpg" alt="purple paisly" onclick="myFunction(this);">
             <p> Request name: "purple paisly"<br>Notes: medium sized batch, ~20 masks, all complete except elastic.
             </p>
         </div>
         <div class="caption-duo">
-            <img float=left src="resources/needle and thread.jpg" alt="needle and thread design mask">
+            <img float=left src="resources/needle and thread.jpg" alt="needle and thread design mask" onclick="myFunction(this);">
             <p> Request name: "needle and thread mask"<br>Notes: single mask, complete except for elastic.
             </p>
         </div>
         <div class="caption-duo">
-            <img float=left src="resources/orange and gold.jpg" alt="orange and gold">
+            <img float=left src="resources/orange and gold.jpg" alt="orange and gold" onclick="myFunction(this);">
             <p> Request name: "orange and gold"<br>Notes: likely out of stock. Potentially one or two available masks.
             </p>
         </div>
         <div class="caption-duo">
-            <img float=left src="resources/pink squares.jpg" alt="pink squares">
+            <img float=left src="resources/pink squares.jpg" alt="pink squares" onclick="myFunction(this);">
             <p> Request name: "pink squares"<br>Notes: small batch, ~3 masks remaining, but there is some more fabric. This fabric is weaker and these masks require a filter.
             </p>
         </div>
@@ -328,5 +384,18 @@ h2 {
             }
           });
         }
+        function myFunction(imgs) {
+  // Get the expanded image
+  var expandImg = document.getElementById("expandedImg");
+  // Get the image text
+  var imgText = document.getElementById("imgtext");
+  // Use the same src in the expanded image as the image being clicked on from the grid
+  expandImg.src = imgs.src;
+  // Use the value of the alt attribute of the clickable image as text inside the expanded image
+  imgText.innerHTML = imgs.alt;
+  // Show the container element (hidden with CSS)
+  expandImg.parentElement.style.display = "block";
+}
+
         </script>
 </body>
